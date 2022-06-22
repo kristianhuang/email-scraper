@@ -19,10 +19,11 @@ from src.spider import Spider
 class WebDriver(object):
     url = "https://www.google.com.hk"
 
-    def __init__(self):
-        self.driver = self.__intDriver()
+    def __init__(self, silence: bool = False):
         self.sp = Spider()
         self.emails = []
+        self.silence = silence
+        self.driver = self.__intDriver()
 
     def run(self, keyword: str):
         print("[bold green]抓取中[/bold green]:smiley:")
@@ -33,7 +34,7 @@ class WebDriver(object):
             print(self.emails)
         except Exception as e:
             pass
-        self.driver.quit()
+        # self.driver.quit()
         self.driver.close()
 
         return self.emails
@@ -62,16 +63,17 @@ class WebDriver(object):
 
     def __intDriver(self):
         options = webdriver.ChromeOptions()
+        if self.silence:
+            options.add_argument("--headless")  # 无头模式(静默模式)
         options.add_experimental_option("detach", True)
-        # options.add_argument("--headless")  # 无头模式
         options.add_argument("--disable-gpu")  # 禁止弹窗
         options.add_argument('--incognito')  # 无痕隐身
         options.add_experimental_option("excludeSwitches", ['enable-logging', "enable-automation"])  # 禁止打印日志.规避检测
         options.add_argument('blink-settings=imagesEnabled=false')  # 禁止图片
-        # options.add_argument("start-maximized")
+        # options.add_argument("start-maximized") # 最大化窗口
         options.add_argument("--disable-blink-features=AutomationControlled")
         options.add_argument("--log-level=3")  # 关闭日志打印
-        driver = webdriver.Chrome(executable_path=ChromeDriverManager(log_level=40).install(),
+        driver = webdriver.Chrome(executable_path=ChromeDriverManager().install(),
                                   options=options)
         with open(f'{os.path.dirname(__file__)}/../stealth.min.js') as f:
             js = f.read()

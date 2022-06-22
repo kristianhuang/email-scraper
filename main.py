@@ -12,7 +12,6 @@ from src.webdriver import WebDriver
 if __name__ == '__main__':
     f = flag.Flag()
     f.register()
-
-    wd = WebDriver()
-    datas = wd.run(f.args.keyword.replace("-", " "))
-    excel.save(f"keyword-{f.args.keyword}", datas)
+    wd = WebDriver(f.args.silence)
+    data = wd.run(f.args.keyword.replace("-", " "))
+    excel.save(f"keyword-{f.args.keyword}", data)
